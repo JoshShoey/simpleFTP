@@ -1,0 +1,83 @@
+Command - cd
+
+1. Client sends cd request
+- Client sends one byte opcode of ASCII character 'A' followed by
+- two-byte integer in two's complement and network byte order representing the length of path name the server is being requested to change to followed by
+- the sequence of ASCII characters representing the path name the server is being requested to change to
+
+2. Server response
+- Server sends one byte opcode of ASCII character 'A' followed by
+- one byte acknowledgement code which is one of the following ASCII characters:
+  - 0 = directory change was successful
+  - 1 = directory does not exist
+  - 2 = access was denied to directory
+  - 3 = other reason for failure
+
+Command - dir
+
+1. Client sends dir request
+- Client sends one byte opcode of ASCII character 'B'
+
+2. Server response
+- Server sends one byte opcode of ASCII character 'B' followed by
+- two-byte integer in two's complement and network byte order representing N number of files and directories in the current server directory
+- a sequence of N "packets" of information about the file / folder containing:
+  - one byte opcode of which is one of the following ASCII characters:
+    - f = regular file
+    - d = directory
+    - o = other type of file
+  - two-byte integer in two's complement and network byte order representing the length of the filename of the file / folder in the directory
+  - the sequence of ASCII characters representing the filename of the file / folder
+
+Command - get
+
+1. Client sends get request
+- Client sends one byte opcode of ASCII character 'C' followed by
+- two-byte integer in two's complement and network byte order representing the length of the filename of the file to be retrieved from the server
+- the sequence of characters representing the filename
+
+2. Server response
+- Server sends one byte opcode of ASCII character 'C' followed by
+- one byte opcode which is one of the following ASCII characters:
+  - 0 = OK to send file
+  - 1 = file not found
+  - 2 = permission denied
+  - 3 = other reason for failure
+- if 0 then server will send four-byte integer in two's complement and network byte order which represents the length of the file
+- the sequence of N bytes which is the content of the file
+
+Command - put
+
+1. Client sends put request
+- Client sends one byte opcode of ASCII character 'D' followed by
+- two-byte integer in two's complement and network byte order representing the length of the filename of the file to be put on the server followed by
+- the sequence of characters representing the filename
+
+2. Server response
+- Server sends one byte opcode of the ASCII character 'D' followed by
+- one byte acknowledgement code which is one of the following ASCII characters:
+  - 0 = ready to receive the named file
+  - 1 = cannot accept file as filename clashes
+  - 2 = cannot accept file as server cannot create the named file
+  - 3 = cannot accept file due to other reason
+
+3. Client if server response is 0
+- Client sends one byte opcode of the ASCII character 'E' followed by
+- four-byte integer in two's complement and network byte order representing the length of the file to be sent followed by
+- the sequence of N bytes that is the contents of the file
+
+4. Server acknowledgement
+- Server sends one byte opcode of the ASCII character 'E' followed by
+- one byte acknowledgement code which is one of the following ASCII characters:
+  - 0 = transfer successful
+  - 1 = transfer unsuccessful
+
+Command - pwd
+
+1. Client sends pwd request
+- Client sends one byte opcode of ASCII character 'F'
+
+2. Server response
+- Server sends one byte opcode of the ASCII character 'F' followed by
+- two-byte integer in two's complement and network byte order representing the length of the path
+- the sequence of characters representing the path

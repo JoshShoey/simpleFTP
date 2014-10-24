@@ -1,0 +1,6 @@
+This is the root directory for a simple FTP program that was made for ICT310 
+Semester 2, 2013 at Murdoch University. It contains a document detailing the
+protocol the server and client use to communicate and two directories which
+contain the source files for the client (myftp) and the server (myftpd). These
+programs have been written in C and are intended to be run on a Linux based
+operating system.
